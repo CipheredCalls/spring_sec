@@ -24,7 +24,8 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter {
     UserDetailsService userDetails(){
         var userDetailsService = new InMemoryUserDetailsManager();
 
-        userDetailsService.createUser(new SecurityUser());
+        userDetailsService.createUser(new SecurityUser("Mohammed","123456"));
+        userDetailsService.createUser(new SecurityUser("Mohammed2","12345"));
 
         return userDetailsService;
     }

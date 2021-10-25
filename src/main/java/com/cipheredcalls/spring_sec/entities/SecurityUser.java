@@ -1,5 +1,7 @@
 package com.cipheredcalls.spring_sec.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,16 +9,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
 public class SecurityUser implements UserDetails {
+
+    private String username ;
+    private String password ;
 
     @Override
     public String getUsername() {
-        return "Mohammed";
+        return username;
     }
 
     @Override
     public String getPassword() {
-        return "123456";
+        return password;
     }
 
     @Override
