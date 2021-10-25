@@ -13,17 +13,16 @@ import java.util.List;
 @AllArgsConstructor
 public class SecurityUser implements UserDetails {
 
-    private String username ;
-    private String password ;
+    private User user ;
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getUsername();
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
