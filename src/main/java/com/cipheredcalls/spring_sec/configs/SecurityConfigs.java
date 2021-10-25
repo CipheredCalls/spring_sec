@@ -1,5 +1,6 @@
 package com.cipheredcalls.spring_sec.configs;
 
+import com.cipheredcalls.spring_sec.entities.SecurityUser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,12 +24,7 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter {
     UserDetailsService userDetails(){
         var userDetailsService = new InMemoryUserDetailsManager();
 
-        userDetailsService.createUser(
-                User.withUsername("Mohammed")
-                        .password("123456")
-                        .authorities("read")
-                        .build()
-        );
+        userDetailsService.createUser(new SecurityUser());
 
         return userDetailsService;
     }
