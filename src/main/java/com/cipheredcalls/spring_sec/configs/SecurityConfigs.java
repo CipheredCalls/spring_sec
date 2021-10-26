@@ -1,6 +1,5 @@
 package com.cipheredcalls.spring_sec.configs;
 
-import com.cipheredcalls.spring_sec.entities.SecurityUser;
 import com.cipheredcalls.spring_sec.entities.User;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -28,9 +27,6 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter {
 
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .withUser(new SecurityUser(user))
-                .withUser(new SecurityUser(user2))
-                .withDefaultSchema()
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 
