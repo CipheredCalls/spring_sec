@@ -1,5 +1,6 @@
 package com.cipheredcalls.spring_sec.configs;
 
+import com.cipheredcalls.spring_sec.encoders.FakePasswordEncoder;
 import com.cipheredcalls.spring_sec.entities.Authority;
 import com.cipheredcalls.spring_sec.entities.User;
 import com.cipheredcalls.spring_sec.repos.AuthorityRepo;
@@ -21,7 +22,7 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter implements Ini
     final UserRepo userRepo;
     final AuthorityRepo authorityRepo;
     final SecurityUserDetailsService userDetailsService ;
-    BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+    FakePasswordEncoder fake = new FakePasswordEncoder();
 
     public SecurityConfigs(UserRepo userRepo, AuthorityRepo authorityRepo, SecurityUserDetailsService userDetailsService) {
         this.userRepo = userRepo;
@@ -32,7 +33,7 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter implements Ini
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
-                .passwordEncoder(bcrypt);
+                .passwordEncoder(fake);
     }
 
     @Override
@@ -53,9 +54,9 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter implements Ini
         Authority auth1 = authorityRepo.save(new Authority("ADMIN"));
         Authority auth2 = authorityRepo.save(new Authority("USER"));
 
-        User user = User.builder().username("Mohammed").password(bcrypt.encode("123456"))
+        User user = User.builder().username("Mohammed").password(fake.encode("123456"))
                 .enabled(true).phoneNumber("056232323").authorities(List.of(auth1)).build(); // admin
-        User user2 = User.builder().username("Mohammed2").password(bcrypt.encode("12345"))
+        User user2 = User.builder().username("Mohammed2").password(fake.encode("12345"))
                 .enabled(true).phoneNumber("056343434").authorities(List.of(auth2)).build();// user
 
         userRepo.save(user);
