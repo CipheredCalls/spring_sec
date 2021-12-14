@@ -1,6 +1,8 @@
 package com.cipheredcalls.spring_sec.configs;
 
+import com.cipheredcalls.spring_sec.entities.Authority;
 import com.cipheredcalls.spring_sec.entities.User;
+import com.cipheredcalls.spring_sec.repos.AuthorityRepo;
 import com.cipheredcalls.spring_sec.repos.UserRepo;
 import com.cipheredcalls.spring_sec.services.SecurityUserDetailsService;
 import org.springframework.beans.factory.InitializingBean;
@@ -10,16 +12,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
-import javax.sql.DataSource;
+import java.util.List;
 
 @Configuration
 public class SecurityConfigs extends WebSecurityConfigurerAdapter implements InitializingBean {
 
     final UserRepo userRepo;
+    final AuthorityRepo authorityRepo;
     final SecurityUserDetailsService userDetailsService ;
 
-    public SecurityConfigs(UserRepo userRepo, SecurityUserDetailsService userDetailsService) {
+    public SecurityConfigs(UserRepo userRepo, AuthorityRepo authorityRepo, SecurityUserDetailsService userDetailsService) {
         this.userRepo = userRepo;
+        this.authorityRepo = authorityRepo;
         this.userDetailsService = userDetailsService;
     }
 
@@ -33,7 +37,10 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter implements Ini
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic()
                 .and()
-                    .authorizeRequests().anyRequest().authenticated()
+                    .authorizeRequests()
+                .mvcMatchers("/admin").hasAnyAuthority("ADMIN")
+                .mvcMatchers("/user").hasAnyAuthority("USER","ADMIN")
+                .anyRequest().authenticated()
                 .and()
                     .csrf().disable()
                     .headers().frameOptions().disable();
@@ -41,10 +48,15 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter implements Ini
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        Authority auth1 = authorityRepo.save(new Authority("ADMIN"));
+        Authority auth2 = authorityRepo.save(new Authority("USER"));
+
+
         User user = User.builder().username("Mohammed").password("123456")
-                .enabled(true).phoneNumber("056232323").build();
+                .enabled(true).phoneNumber("056232323").authorities(List.of(auth1)).build(); // admin
         User user2 = User.builder().username("Mohammed2").password("12345")
-                .enabled(true).phoneNumber("056343434").build();
+                .enabled(true).phoneNumber("056343434").authorities(List.of(auth2)).build();// user
+
         userRepo.save(user);
         userRepo.save(user2);
     }
